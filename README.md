@@ -12,3 +12,11 @@ Issues
 > maybe need different features  
 > maybe need to train on filtered data  
 
+
+
+
+
+Workflow codes:
+
+FeatureCalculate.py: Class to calculate basic statistical features of a timeseries. This can be extended with whatever features might be of interest
+See other workflow codes for examples of its use
