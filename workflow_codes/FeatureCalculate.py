@@ -32,7 +32,7 @@ class FeatureCalc:
         #    sys.exit(1)
 
         #total number of features that we can calculate
-        self.Nfeatures = len(feature_names)
+        self.Nfeatures = len(self.feature_names)
 
         if self.feature_list == False:
 
@@ -53,7 +53,7 @@ class FeatureCalc:
         '''Return the list of feature names
         '''
 
-        return feature_names
+        return self.feature_names
 
     def calculate_all_features(self):
 
