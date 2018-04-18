@@ -121,7 +121,7 @@ def main():
     for matrix in [f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14]:
         df = pd.DataFrame(matrix,columns=channel_names)
         df['file_name'] = file_name_list
-        df.to_csv(feature_names[i]+'rms_fcalc.csv',index=False)
+        df.to_csv(feature_names[i]+'_rms_fcalc.csv',index=False)
         i += 1
 
     os.system('mv *.csv %s' %cwd)

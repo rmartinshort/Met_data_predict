@@ -10,18 +10,20 @@ class FeatureCalc:
     It is initialized on a timeseries object, which can then be reset with each new timeseries. This might be inefficient so we should
     test it. For each ts array, an array of features is calculated and returned'''
 
+    #String names of all the features. This is useful when building a pandas df from them
+    #This class variable should be added to if more features are introduced
+    feature_names = ['abs_energy','cid_ce','mean_abs_change','mean_change','mean','median','skewness','kurtosis','interquartile_range',
+            'variance','x_crossing_m','maximum','minimum','root_mean_square']
 
-    def __init__(self,feature_list=False):
 
-        '''ts is a timseries of values. time_vector is a vector of times corresponding to those values
+    def __init__(self,time_vector=None,user_feature_list=False):
+
+        '''ts is a timseries of values. time_vector (not currently used) is a vector of times corresponding to those values
         These input timeseries must be of the same length'''
 
-        #String names of all the features. This is useful when building a pandas df from them
-        self.feature_names = ['abs_energy','cid_ce','mean_abs_change','mean_change','mean','median','skewness','kurtosis','interquartile_range',
-        'variance','x_crossing_m','maximum,minimum','root_mean_square']
 
         self.ts = None
-        self.feature_list = feature_list
+        self.feature_list = user_feature_list
 
         #Some features may need to import a time vector too, but we won't do this at the moment
 
@@ -30,7 +32,7 @@ class FeatureCalc:
         #    sys.exit(1)
 
         #total number of features that we can calculate
-        self.Nfeatures = 14
+        self.Nfeatures = len(feature_names)
 
         if self.feature_list == False:
 
@@ -51,7 +53,7 @@ class FeatureCalc:
         '''Return the list of feature names
         '''
 
-        return self.feature_names
+        return feature_names
 
     def calculate_all_features(self):
 
@@ -112,7 +114,7 @@ class FeatureCalc:
         tsfresh feature
         F4
         '''
-        
+
         return np.mean(np.diff(self.ts))
 
     def meanval(self):
