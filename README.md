@@ -13,7 +13,9 @@ Issues
 > maybe need to train on filtered data  
 
 
+REFREG_test6.ipynb: Better documented tests of random forest on various collections of features calculated with a sliding window of 30 s
 
+May want to filter the DAS data before calculating features - this might reduce noise in the feature timeseries
 
 
 Workflow codes:

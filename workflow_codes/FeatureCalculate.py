@@ -3,7 +3,6 @@
 #Class that calculates time series features that might be useful in the DAS project
 import numpy as np
 import scipy.stats
-from scipy import signal, fft
 
 class FeatureCalc:
 
@@ -14,7 +13,7 @@ class FeatureCalc:
     #String names of all the features. This is useful when building a pandas df from them
     #This class variable should be added to if more features are introduced
     feature_names = ['abs_energy','cid_ce','mean_abs_change','mean_change','mean','median','skewness','kurtosis','interquartile_range',
-            'variance','x_crossing_m','maximum','minimum','root_mean_square','fft_energy','peak_welch']
+            'variance','x_crossing_m','maximum','minimum','root_mean_square']
 
 
     def __init__(self,time_vector=None,user_feature_list=False):
@@ -24,7 +23,6 @@ class FeatureCalc:
 
 
         self.ts = None
-        self.samp = int(40) #default sampling rate for BB data
         self.feature_list = user_feature_list
 
         #Some features may need to import a time vector too, but we won't do this at the moment
@@ -64,8 +62,7 @@ class FeatureCalc:
 
         features = [self.abs_energy,self.cid_ce,self.mean_abs_change,self.mean_change,self.meanval,self.medianval,
         self.skewness,self.kurtosis,self.interquartile_range,
-        self.variance,self.x_crossing_m,self.maximum,self.minimum,self.root_mean_square,self.fft_energy,
-        self.peak_welch]
+        self.variance,self.x_crossing_m,self.maximum,self.minimum,self.root_mean_square]
 
         for i in range(len(features)):
             self.feature_array[i] = features[i]()
@@ -79,19 +76,9 @@ class FeatureCalc:
 
         self.ts = np.array(input_array)
 
-    def load_sample_rate(self,input_rate):
-
-        '''Update the class's sample rate. This should only need to be done once, but
-        in the case of timeseries with different sampling rates it can be added if needed'''
-
-        self.samp = int(input_rate)
-
     ##########################################################################################
     # FEATURE CALCULATORS
     ##########################################################################################
-
-    #############################################################
-    #  TIME FEATURES
 
     def abs_energy(self):
 
@@ -187,6 +174,15 @@ class FeatureCalc:
 
         return np.var(self.ts)
 
+    def x_crossing_m(self):
+
+        '''Return the number of m crossings in the timeseries. Typically m is the mean
+        tsfresh feature
+        F11
+        '''
+
+        x = self.ts[self.ts != self.mean]
+        return sum(np.abs(np.diff(np.sign(x-self.mean))))/2.0
 
     def maximum(self):
 
@@ -214,41 +210,6 @@ class FeatureCalc:
         '''
         x = self.ts
         return np.sqrt(np.mean(x*x))
-
-    #############################################################
-    #  FREQUENCY FEATURES
-
-
-    def fft_energy(self):
-
-        '''Return the sum of the amplitude spectrum
-        Qingkai feature
-        F15
-        '''
-        n = int(len(self.ts)/2)
-        fft_amp = np.abs(fft(self.ts)[np.arange(1,n)])
-        return np.sum(fft_amp**2)/len(fft_amp) 
-
-    def peak_welch(self):
-
-        '''Return the frequency corresponding to the maximum value in the 
-        Welch peridogram
-        RMS feature
-        F16
-        '''
-
-        f, pxx = signal.welch(self.ts,self.samp,window='hanning',nperseg=64)
-        return f[np.argmax(pxx)]
-
-    def x_crossing_m(self):
-
-        '''Return the number of m crossings in the timeseries. Typically m is the mean
-        tsfresh feature
-        F11
-        '''
-
-        x = self.ts[self.ts != self.mean]
-        return sum(np.abs(np.diff(np.sign(x-self.mean))))/2.0
 
 
 
